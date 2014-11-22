@@ -32,6 +32,7 @@ public class Server extends JFrame {
 	private Map<String, ServerMessageThread> map = new HashMap<String, ServerMessageThread>();// 用户名与端口号的映射
 
 	private Thread thread;
+	
 
 	public JLabel getLabel2() {
 		return label2;
