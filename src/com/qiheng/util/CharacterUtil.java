@@ -13,5 +13,9 @@ public class CharacterUtil {
 	
 	public static final int SERVER_CLOSED = 6;
 	
-
+	public static final int LOGIN_RESULT = 7;
+	
+	public static final String  SUCCESS = "success";
+	
+	public static final String  FAILED = "failed";
 }

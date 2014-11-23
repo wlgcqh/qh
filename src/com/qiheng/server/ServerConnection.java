@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import com.qiheng.util.CharacterUtil;
 import com.qiheng.util.XMLUtil;
 
 public class ServerConnection extends Thread {
@@ -44,9 +45,21 @@ public class ServerConnection extends Thread {
 				String info = new String(buf, 0, length);
 
 				String userName = XMLUtil.extractUsername(info);
-
-				out.write("success".getBytes());
-
+				
+				String result=null;
+				if(this.server.getMap().containsKey(userName)){
+					result = CharacterUtil.FAILED;
+				}
+				else{
+					result = CharacterUtil.SUCCESS;
+					
+				}
+				
+				String xml=XMLUtil.constructloginResultXML(result);
+				out.write(xml.getBytes());
+				System.out.println(xml);
+				
+				if(!this.server.getMap().containsKey(userName)){
 				// 创建新的线程，用于处理聊天信息
 				ServerMessageThread serverMessageThread = new ServerMessageThread(
 						this.server, socket);
@@ -58,7 +71,7 @@ public class ServerConnection extends Thread {
 				
 				serverMessageThread.start();
 				
-
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

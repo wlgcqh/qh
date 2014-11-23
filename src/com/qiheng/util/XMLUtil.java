@@ -19,6 +19,7 @@ import org.dom4j.io.SAXReader;
  * userList: 4
  * client_closed: 5
  * server_closed: 6
+ * login_result:  7
  */
 
 public class XMLUtil {
@@ -247,6 +248,27 @@ public class XMLUtil {
 		type.setText("5");
 		Element user = root.addElement("user");
 		user.setText(userName);
+		
+		return document.asXML();
+	}
+	
+	/**
+	 * 
+	 * 像客户端返回用户名是否重名
+	 * <message>
+	 * 			<type>7</type>
+	 * 			<result>success</result>
+	 * </message>
+	 * 
+	 */
+	
+	public static String constructloginResultXML(String result){
+		Document document = XMLUtil.constructDocument();
+		Element root = document.getRootElement();
+		Element type = root.addElement("type");
+		type.setText("7");
+		Element resultElement = root.addElement("content");
+		resultElement.setText(result);
 		
 		return document.asXML();
 	}

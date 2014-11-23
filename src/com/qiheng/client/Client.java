@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -54,10 +55,10 @@ public class Client extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 button1ActionListener(e);
+				button1ActionListener(e);
 			}
 		});
-		//初始化
+		// 初始化
 		this.username.setText("abc");
 		this.hostaddress.setText("localhost");
 		this.port.setText("4000");
@@ -77,13 +78,20 @@ public class Client extends JFrame {
 	}
 
 	private void button1ActionListener(ActionEvent e) {
-		
-		String userName=this.username.getText();
-		String hostAddress=this.hostaddress.getText();
-		int port=Integer.parseInt(this.port.getText());
-		
-		new ClientConnection(userName, hostAddress, port, this).start();
-		
+
+		String userName = this.username.getText();
+		String hostAddress = this.hostaddress.getText();
+		int port = Integer.parseInt(this.port.getText());
+
+		ClientConnection clientConnection = new ClientConnection(userName,
+				hostAddress, port, this);
+		if(clientConnection.login()){
+			clientConnection.start();
+		}
+		else{
+			JOptionPane.showMessageDialog(this, "用户名重复！",
+					"错误", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	public static void main(String[] args) {

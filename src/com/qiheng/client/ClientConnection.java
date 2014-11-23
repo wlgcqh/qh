@@ -33,7 +33,7 @@ public class ClientConnection extends Thread {
 		this.port = port;
 		this.client = client;
 		connect2Server();
-		login();
+		
 	}
 	
 	
@@ -53,8 +53,9 @@ public class ClientConnection extends Thread {
 	public String getUserName() {
 		return userName;
 	}
-
-	private void login() {
+	
+	//登录成功返回true
+	public boolean login() {
 
 		try {
 
@@ -64,16 +65,29 @@ public class ClientConnection extends Thread {
 			byte[] buf = new byte[5000];
 			int length = this.in.read(buf);
 
-			String response = new String(buf, 0, length);
-			System.out.println("response: " + response);
+			String loginResultXML = new String(buf, 0, length);
+			//System.out.println("response: " + response);
+			String loginResult=XMLUtil.extractContent(loginResultXML);
+			System.out.println(loginResult);
+			//登陆成功
+			if(CharacterUtil.SUCCESS.equals(loginResult)){
+				// 打开聊天窗口
+				this.chatClient = new ChatClient(this);
 
-			// 打开聊天窗口
-			this.chatClient = new ChatClient(this);
+				this.client.setVisible(false);
+				return true;
+			}
+			//登录失败
+			else{
+				return false;
+			}
+			
 
-			this.client.setVisible(false);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	private void connect2Server() {
