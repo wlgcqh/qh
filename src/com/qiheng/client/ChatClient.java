@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import com.qiheng.util.CharacterUtil;
+
 public class ChatClient extends javax.swing.JFrame {
 	private javax.swing.JButton jButton1;
 	private javax.swing.JButton jButton2;
@@ -24,8 +26,10 @@ public class ChatClient extends javax.swing.JFrame {
 	private javax.swing.JTextArea jTextArea2;
 	private javax.swing.JTextField jTextField;
 
-	public ChatClient() {
+	private ClientConnection clientConnection;
 
+	public ChatClient(ClientConnection clientConnection) {
+		this.clientConnection = clientConnection;
 		initComponents();
 	}
 
@@ -51,7 +55,7 @@ public class ChatClient extends javax.swing.JFrame {
 		jPanel3 = new JPanel();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("聊天室");
+		this.setTitle("聊天室:" + this.clientConnection.getUserName());
 		setResizable(false);
 		jPanel1.setBorder(BorderFactory.createTitledBorder("聊天室信息"));
 		jPanel2.setBorder(BorderFactory.createTitledBorder("在线用户列表"));
@@ -90,12 +94,11 @@ public class ChatClient extends javax.swing.JFrame {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				try {
-					// ChatClient.this.clientConnection.sendMessage("client closed",
-					// "5");
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+			
+					ChatClient.this.clientConnection.sendMessage(
+							"client closed", CharacterUtil.CLIENT_CLOSED);
+					
+				
 			}
 		});
 
@@ -113,7 +116,8 @@ public class ChatClient extends javax.swing.JFrame {
 		// 清空聊天数据
 		this.jTextField.setText("");
 		// 向服务器端发送聊天数据
-		// this.clientConnection.sendMessage(message, "2");
+		this.clientConnection
+				.sendMessage(message, CharacterUtil.CLIENT_MESSAGE);
 	}
 
 }

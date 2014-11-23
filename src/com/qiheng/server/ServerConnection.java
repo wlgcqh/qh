@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -41,15 +42,23 @@ public class ServerConnection extends Thread {
 				int length = in.read(buf);
 				// 客户端发送的登录XML信息
 				String info = new String(buf, 0, length);
-				
-				String userName=XMLUtil.extractUsername(info);
-				
+
+				String userName = XMLUtil.extractUsername(info);
+
 				out.write("success".getBytes());
+
+				// 创建新的线程，用于处理聊天信息
+				ServerMessageThread serverMessageThread = new ServerMessageThread(
+						this.server, socket);
+				//将用户名与相应的线程对象加入map中
+				this.server.getMap().put(userName, serverMessageThread);
 				
-				//创建新的线程，用于处理聊天信息
+				//更新用户列表
+				serverMessageThread.updateUserList();
 				
+				serverMessageThread.start();
 				
-				
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

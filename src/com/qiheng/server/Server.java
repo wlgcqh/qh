@@ -4,6 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import com.qiheng.util.XMLUtil;
 
 public class Server extends JFrame {
 	private JPanel panel1;
@@ -33,6 +39,10 @@ public class Server extends JFrame {
 
 	private Thread thread;
 	
+	
+	public JTextArea getTextarea() {
+		return textarea;
+	}
 
 	public JLabel getLabel2() {
 		return label2;
@@ -83,6 +93,27 @@ public class Server extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				check(e);
 			}
+		});
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				try {
+					Collection<ServerMessageThread> cols = Server.this.map.values();
+					String message = XMLUtil.constructServerClosedXML();
+					//发送服务端窗口关闭的消息
+					for (ServerMessageThread smt : cols) {
+						smt.sendMessage(message);
+					}
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}finally{
+					System.exit(0);
+				}
+				
+				
+			}
+			
+			
 		});
 		textarea.setEditable(false);
 		panel1.add(label1);
